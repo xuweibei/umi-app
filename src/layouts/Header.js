@@ -19,6 +19,9 @@ const Header = ({ location }) => {
           <MenuItem key="/" selectedKeys={[location.pathname]}>
             <Link to="/">首页</Link>
           </MenuItem>
+          <MenuItem key="/users" selectedKeys={[location.pathname]}>
+            <Link to="/users">用户</Link>
+          </MenuItem>
         </Menu>
         <div className="right">
           <Dropdown overlay={menu}>
