@@ -1,26 +1,40 @@
 import React from 'react';
-import { Layout, Icon, Form, Input, Button } from 'antd';
+import { Layout, Icon, Form, Input, Button, message } from 'antd';
 import { login } from './serivers';
 
 import styles from './index.scss';
 import router from 'umi/router';
+import jwt_decode from 'jwt-decode';
+import { connect } from 'dva';
 
 const { Content, Footer } = Layout;
 const IconStyle = { color: 'rgba(0,0,0,0.25)' };
 
-const Login = ({ form }) => {
+const Login = ({ form, loading, dispatch }) => {
   const { getFieldDecorator } = form;
   const handleSubmit = () => {
     const { validateFields } = form;
     validateFields((err, values) => {
-      // console.log(err, values, '是的李开复');
       if (!err) {
-        login(values).then(data => {
-          console.log(data);
+        dispatch({
+          type: 'login/loginIn',
+          payload: values
+        }).then(data => {
           if (data && data.state === 'suc') {
-            router.push('/');
+            const token = jwt_decode(data.token);
+            const { username, id, nickname, type } = token;
+            localStorage.setItem('username', username);
+            localStorage.setItem('nickname', nickname);
+            localStorage.setItem('userId', id);
+            localStorage.setItem('authority', type === '0' ? 'admin' : 'user');
+            message.success('登录成功');
+            setTimeout(() => {
+              router.push('/');
+            }, 500)
+          } else {
+            message.error('登录失败')
           }
-        });
+        })
       }
     });
   };
@@ -67,7 +81,7 @@ const Login = ({ form }) => {
               )}
             </Form.Item>
             <Form.Item>
-              <Button onClick={handleSubmit} type="primary" style={{ width: '100%' }}>
+              <Button loading={loading} onClick={handleSubmit} type="primary" style={{ width: '100%' }}>
                 登录
               </Button>
             </Form.Item>
@@ -83,4 +97,6 @@ const Login = ({ form }) => {
 
 const LoginWrap = Form.create()(Login);
 
-export default LoginWrap;
+export default connect(({ loading }) => ({
+  loading: loading.effects['login/loginIn']
+}))(LoginWrap);

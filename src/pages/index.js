@@ -6,7 +6,7 @@ import { Row, Col, Card } from 'antd';
 import ReactEcharts from 'echarts-for-react';
 import styles from './index.scss';
 
-export default function() {
+export default function () {
   const option = {
     title: {
       text: '某站点用户访问来源',

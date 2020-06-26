@@ -1,4 +1,4 @@
-import { fetchUsers } from '../services';
+import { fetchUsers, addUsers, edit, remove } from '../services';
 
 export default {
   namespace: 'users',
@@ -22,6 +22,15 @@ export default {
       } else {
         yield put({ type: 'setData', payload: { data: { list: [], total: 0 } } });
       }
+    },
+    *add({ payload }, { call }) {
+      return yield call(addUsers, payload);
+    },
+    *edit({ payload }, { call }) {
+      return yield call(edit, payload);
+    },
+    *remove({ payload }, { call }) {
+      return yield call(remove, payload);
     },
   },
   subscriptions: {

@@ -2,13 +2,17 @@ import React from 'react';
 import { Menu, Dropdown, Icon, Affix } from 'antd';
 import Link from 'umi/link';
 import withRouter from 'umi/withRouter';
+import router from 'umi/router';
 
 const MenuItem = Menu.Item;
 
 const Header = ({ location }) => {
   const menu = (
     <Menu>
-      <MenuItem>退出</MenuItem>
+      <MenuItem onClick={() => {
+        localStorage.clear();
+        router.push('/login');
+      }}>退出</MenuItem>
     </Menu>
   );
   return (
@@ -22,12 +26,15 @@ const Header = ({ location }) => {
           <MenuItem key="/users" selectedKeys={[location.pathname]}>
             <Link to="/users">用户</Link>
           </MenuItem>
+          <MenuItem key="/reports" selectedKeys={[location.pathname]}>
+            <Link to="/reports">周报</Link>
+          </MenuItem>
         </Menu>
         <div className="right">
           <Dropdown overlay={menu}>
             <a className="a" href="www.baidu.com">
               <Icon type="user" style={{ marginRight: 3 }} />
-              admin
+              {localStorage.username}
             </a>
           </Dropdown>
         </div>
